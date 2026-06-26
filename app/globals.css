@@ -25,3 +25,28 @@ body {
     text-wrap: balance;
   }
 }
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.35s ease both;
+}
+.animate-scale-in {
+  animation: scaleIn 0.3s ease both;
+}

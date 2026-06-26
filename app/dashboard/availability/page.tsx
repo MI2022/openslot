@@ -88,62 +88,134 @@ export default function AvailabilityPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow p-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Set Availability</h1>
-        <form className="space-y-4" onSubmit={handleSave}>
-          {DAYS.map((day, index) => {
-            const { enabled, startTime, endTime } = availability[index];
-            return (
-              <div key={day} className="flex items-center gap-4">
-                <input
-                  type="checkbox"
-                  id={day}
-                  checked={enabled}
-                  onChange={() => toggleDay(index)}
-                  className="h-4 w-4 accent-blue-600"
-                />
-                <label htmlFor={day} className="w-28 text-gray-700 font-medium">
-                  {day}
-                </label>
-                <div className="flex items-center gap-2 ml-auto">
-                  <input
-                    type="time"
-                    value={startTime}
-                    disabled={!enabled}
-                    onChange={(e) => updateTime(index, 'startTime', e.target.value)}
-                    className="border border-gray-300 rounded-lg px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-40 disabled:cursor-not-allowed"
-                  />
-                  <span className="text-gray-400 text-sm">to</span>
-                  <input
-                    type="time"
-                    value={endTime}
-                    disabled={!enabled}
-                    onChange={(e) => updateTime(index, 'endTime', e.target.value)}
-                    className="border border-gray-300 rounded-lg px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-40 disabled:cursor-not-allowed"
-                  />
+    <div className="max-w-2xl mx-auto">
+      {/* Page header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Availability</h1>
+        <p className="mt-1 text-sm text-slate-500">
+          Set your weekly working hours. Visitors can only book during these times.
+        </p>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden">
+
+        {/* Blue accent bar — matches meeting types cards */}
+        <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-400" />
+
+        {/* Timezone banner */}
+        <div className="flex items-center gap-2.5 px-7 py-4 border-b border-slate-100 bg-slate-50/60">
+          <svg className="h-4 w-4 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="text-[12.5px] text-slate-500">
+            Your timezone:{' '}
+            <span className="font-semibold text-slate-700">
+              {Intl.DateTimeFormat().resolvedOptions().timeZone}
+            </span>
+          </span>
+        </div>
+
+        <form onSubmit={handleSave}>
+          <div className="px-7 py-2 divide-y divide-slate-100">
+            {DAYS.map((day, index) => {
+              const { enabled, startTime, endTime } = availability[index];
+              return (
+                <div
+                  key={day}
+                  className={`flex items-center gap-5 py-5 transition-colors duration-150 ${
+                    enabled ? '' : 'opacity-50'
+                  }`}
+                >
+                  {/* Custom checkbox */}
+                  <label className="relative flex-shrink-0 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      id={day}
+                      checked={enabled}
+                      onChange={() => toggleDay(index)}
+                      className="sr-only peer"
+                    />
+                    <div className={`h-6 w-6 rounded-lg border-2 transition-all duration-150 flex items-center justify-center shadow-sm ${
+                      enabled
+                        ? 'bg-blue-600 border-blue-600'
+                        : 'bg-white border-slate-300 hover:border-slate-400'
+                    }`}>
+                      {enabled && (
+                        <svg className="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                  </label>
+
+                  {/* Day label */}
+                  <label
+                    htmlFor={day}
+                    className={`w-32 text-[15px] font-semibold cursor-pointer select-none transition-colors ${
+                      enabled ? 'text-slate-800' : 'text-slate-400'
+                    }`}
+                  >
+                    {day}
+                  </label>
+
+                  {/* Time inputs */}
+                  {enabled ? (
+                    <div className="flex items-center gap-3 ml-auto">
+                      <input
+                        type="time"
+                        value={startTime}
+                        onChange={(e) => updateTime(index, 'startTime', e.target.value)}
+                        className="border border-slate-200 rounded-xl px-4 py-2 text-[13.5px] font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm hover:border-slate-300 transition-all w-[130px]"
+                      />
+                      <span className="text-[13px] font-medium text-slate-400">to</span>
+                      <input
+                        type="time"
+                        value={endTime}
+                        onChange={(e) => updateTime(index, 'endTime', e.target.value)}
+                        className="border border-slate-200 rounded-xl px-4 py-2 text-[13.5px] font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm hover:border-slate-300 transition-all w-[130px]"
+                      />
+                    </div>
+                  ) : (
+                    <span className="ml-auto text-[13px] text-slate-400 font-medium">Unavailable</span>
+                  )}
                 </div>
+              );
+            })}
+          </div>
+
+          {/* Footer */}
+          <div className="px-7 pb-7 pt-3 space-y-3 border-t border-slate-100 mt-2">
+            {message && (
+              <div className={`flex items-center gap-2 text-[13px] font-medium rounded-xl px-4 py-3 ${
+                message === 'Availability saved!'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                  : 'bg-red-50 text-red-600 border border-red-100'
+              }`}>
+                {message === 'Availability saved!' ? (
+                  <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                )}
+                {message}
               </div>
-            );
-          })}
-          <div className="pt-4">
+            )}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3 text-[14px] font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-150 active:scale-[0.98]"
             >
-              Save
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Save availability
             </button>
           </div>
-          {message && (
-            <p className={`text-sm font-medium text-center pt-2 ${
-              message === 'Availability saved!' ? 'text-green-600' : 'text-red-600'
-            }`}>
-              {message}
-            </p>
-          )}
         </form>
       </div>
-    </main>
+    </div>
   );
 }
 
